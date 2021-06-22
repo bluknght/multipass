@@ -1,13 +1,12 @@
 # Setup get-node-ips.ps1
 $GetNodeIps = @"
-multipass ls --format csv > nodes.csv; (import-csv .\nodes.csv | where Name -like "*Node*").IPv4
-rm nodes.csv
+(multipass ls --format csv > nodes.csv | ConvertFrom-Csv | where Name -like "*Node*").IPv4
 "@
 $GetNodeIps | Out-File get-node-ips.ps1 -Force
 
 # Setup ssh-connection-to-all-nodes.ps
 $SetupSSHConnection = @"
-./get-node-ips.ps1 | foreach {ssh ubuntu@`$_}
+(multipass ls --format csv > nodes.csv | ConvertFrom-Csv | where Name -like "*Node*").IPv4 | foreach {ssh ubuntu@`$_}
 "@
 $SetupSSHConnection | Out-File ssh-connection-to-all-nodes.ps1 -Force
 
@@ -37,8 +36,7 @@ $CreateMultipassNodes | Out-File create-multipass-nodes.ps1 -Force
 
 # Setup delete-multipass-nodes.ps1
 $DeleteNodes = @"
-multipass ls --format csv > nodes.csv; (import-csv .\nodes.csv | where Name -like "*Node*").Name | foreach {multipass delete `$_}
+(multipass ls --format csv > nodes.csv | ConvertFrom-Csv | where Name -like "*Node*")..Name | foreach {multipass delete `$_}
 multipass purge
-rm nodes.csv
 "@
 $DeleteNodes | Out-File delete-multipass-nodes.ps1 -Force
