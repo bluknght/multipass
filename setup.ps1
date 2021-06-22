@@ -36,7 +36,7 @@ $CreateMultipassNodes | Out-File create-multipass-nodes.ps1 -Force
 
 # Setup delete-multipass-nodes.ps1
 $DeleteNodes = @"
-(multipass ls --format csv | ConvertFrom-Csv | where Name -like "*Node*")..Name | foreach {multipass delete `$_}
+(multipass ls --format csv | ConvertFrom-Csv | where Name -like "*Node*").Name | foreach {multipass delete `$_}
 multipass purge
 "@
 $DeleteNodes | Out-File delete-multipass-nodes.ps1 -Force
