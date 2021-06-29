@@ -1,3 +1,5 @@
+param ([Parameter(Mandatory=$true,HelpMessage="How many nodes do you want to create?")]$Nodes)
+
 # Setup get-node-ips.ps1
 $GetNodeIps = @"
 (multipass ls --format csv | ConvertFrom-Csv | where Name -like "*Node*").IPv4
@@ -29,7 +31,6 @@ $CloudInit | Out-File cloud-init.yaml -Force
 
 # Setup create-multipass-nodes.ps1
 $CreateMultipassNodes = @"
-`$Nodes = Read-Host "How many nodes do you want to create?"
 for (`$Node = 1 ; `$Node -le `$Nodes ; `$Node++){multipass launch --name node`$Node --cloud-init cloud-init.yaml}
 "@
 $CreateMultipassNodes | Out-File create-multipass-nodes.ps1 -Force
